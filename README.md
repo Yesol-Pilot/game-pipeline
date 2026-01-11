@@ -76,11 +76,12 @@ docker-compose up -d
 
 ---
 
-## 📚 문서
-
-- [상세 가이드](docs/GUIDE.md)
-- [아키텍처](docs/ARCHITECTURE.md)
-- [API 문서](docs/API.md)
+## 문서
+- [📒 종합 가이드](docs/FULL_DOCUMENTATION.md)
+- [📦 설치 및 배포](docs/DEPLOYMENT.md)
+- [🔑 GitHub Secrets 설정](docs/GITHUB_SECRETS_GUIDE.md) (필독)
+- [✅ 검증 보고서](docs/VERIFICATION_REPORT.md)
+- [🧪 E2E 테스트](run_e2e_test.py)
 
 ---
 
