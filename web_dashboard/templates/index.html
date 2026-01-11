@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Factory Control Center</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="glass-panel header">
+            <div class="logo">
+                <span class="logo-icon">🏭</span>
+                <h1>GAME FACTORY <span class="accent">PRO</span></h1>
+            </div>
+            <div class="status-indicators">
+                <div class="status-item">
+                    <span class="status-dot online"></span> SYSTEM ONLINE
+                </div>
+                <div class="status-item">
+                    <span class="status-dot processing"></span> AI ENGINE READY
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="grid-layout">
+            
+            <!-- 1. Trend Monitor -->
+            <section class="glass-panel trend-section">
+                <h2>📈 Live Trends</h2>
+                <div class="trend-cloud" id="trend-cloud">
+                    <!-- JS will populate this -->
+                    <div class="loading-spinner"></div>
+                </div>
+                <button class="action-btn secondary" onclick="refreshTrends()">Refresh Data</button>
+            </section>
+
+            <!-- 2. Manufacturing Control -->
+            <section class="glass-panel control-section">
+                <h2>🎮 Manufacture New Game</h2>
+                <div class="input-group">
+                    <label>Project Name</label>
+                    <input type="text" id="gameName" placeholder="e.g. Super Cyber Cat">
+                </div>
+                
+                <div class="input-group">
+                    <label>Template</label>
+                    <div class="template-selector">
+                        <div class="template-card selected" onclick="selectTemplate('runner', this)">
+                            <span class="icon">🏃</span> Runner
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('puzzle', this)">
+                            <span class="icon">🧩</span> Puzzle
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('rpg', this)">
+                            <span class="icon">⚔️</span> RPG
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Concept Prompt (Optional)</label>
+                    <textarea id="gameConcept" placeholder="Describe the vibe... (e.g. Neon city, synthwave music, cat protagonist)"></textarea>
+                </div>
+
+                <button class="action-btn primary large" onclick="startManufacture()">
+                    INITIATE PRODUCTION
+                </button>
+            </section>
+
+            <!-- 3. System Logs -->
+            <section class="glass-panel log-section">
+                <h2>🖥️ System Logs</h2>
+                <div class="log-console" id="log-console">
+                    <div class="log-line system">[SYSTEM] Dashboard initialized.</div>
+                    <div class="log-line system">[SYSTEM] Connected to AI Core.</div>
+                    <div class="log-line success">[AUTH] Admin access granted.</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
