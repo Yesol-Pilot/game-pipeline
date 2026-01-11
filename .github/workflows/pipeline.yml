@@ -65,18 +65,30 @@ jobs:
         run: python test_pipeline.py
   
   # 3. Godot 빌드 (수동 트리거 시)
+  # 3. Godot 빌드 (Docker 기반)
   build:
     needs: test
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.2
     
     steps:
       - uses: actions/checkout@v4
       
-      - name: Godot 설치
-        uses: chickensoft-games/setup-godot@v1
+      - name: 캐시 설정
+        uses: actions/cache@v3
         with:
-          version: ${{ env.GODOT_VERSION }}
+          path: ~/.local/share/godot/archives
+          key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
+          
+      - name: .godot 폴더 캐싱
+        uses: actions/cache@v3
+        with:
+          path: build_output/.godot
+          key: ${{ runner.os }}-godot-import-${{ hashFiles('templates/**/*.godot') }}
+          restore-keys: |
+            ${{ runner.os }}-godot-import-
       
       - name: 템플릿 복사
         run: |
@@ -84,17 +96,34 @@ jobs:
           BUILD_DIR="build_output"
           mkdir -p $BUILD_DIR
           cp -r $TEMPLATE_DIR/* $BUILD_DIR/
+          # _core 폴더 심볼릭 링크 또는 복사 (필요 시)
+          cp -r templates/_core $BUILD_DIR/_core
       
+      - name: 안드로이드 Keystore 설정
+        if: inputs.template_type != 'html5' # HTML5가 아닌 경우 (예시)
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+          # export_presets.cfg에 Keystore 경로 및 비밀번호 주입
+          # sed -i "s|keystore/release_user=.*|keystore/release_user=\"${{ secrets.ANDROID_KEYSTORE_ALIAS }}\"|g" build_output/export_presets.cfg
+          # sed -i "s|keystore/release_password=.*|keystore/release_password=\"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}\"|g" build_output/export_presets.cfg
+          echo "Keystore setup complete"
+
       - name: 에셋 임포트
         run: |
           cd build_output
-          godot --headless --editor --quit || true
+          godot --headless --editor --quit
+          
+      - name: Android 빌드
+        run: |
+          cd build_output
+          mkdir -p export
+          godot --headless --export-release "Android" export/game.aab
       
       - name: HTML5 빌드
         run: |
           cd build_output
-          mkdir -p export
-          godot --headless --export-release "Web" export/index.html || echo "빌드 실패 또는 프리셋 미설정"
+          mkdir -p export/web
+          godot --headless --export-release "Web" export/web/index.html
       
       - name: 빌드 결과 업로드
         uses: actions/upload-artifact@v4
