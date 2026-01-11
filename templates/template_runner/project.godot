@@ -19,6 +19,8 @@ config/features=PackedStringArray("4.2", "Mobile")
 
 CombatEvents="*res://_core/autoloads/combat_events.gd"
 UIEvents="*res://_core/autoloads/ui_events.gd"
+UIAnimator="*res://_core/autoloads/ui_animator.gd"
+SceneTransition="*res://_core/autoloads/scene_transition.gd"
 
 [display]
 
