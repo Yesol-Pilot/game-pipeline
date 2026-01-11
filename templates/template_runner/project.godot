@@ -15,6 +15,11 @@ config/description="무한 러너 게임 템플릿 - 자동화 파이프라인�
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 
+[autoload]
+
+CombatEvents="*res://_core/autoloads/combat_events.gd"
+UIEvents="*res://_core/autoloads/ui_events.gd"
+
 [display]
 
 window/size/viewport_width=1080
