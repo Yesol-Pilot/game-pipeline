@@ -23,6 +23,7 @@ UIAnimator="*res://_core/autoloads/ui_animator.gd"
 SceneTransition="*res://_core/autoloads/scene_transition.gd"
 SaveSystem="*res://_core/autoloads/save_system.gd"
 DailyRewardManager="*res://_core/autoloads/daily_reward_manager.gd"
+ShopManager="*res://_core/autoloads/shop_manager.gd"
 
 [display]
 
