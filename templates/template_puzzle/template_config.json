@@ -1,0 +1,55 @@
+{
+    "template_name": "물리 퍼즐",
+    "template_type": "puzzle",
+    "version": "1.0.0",
+    "godot_version": "4.2",
+    "description": "오브젝트를 드래그하거나 발사하여 목표를 달성하는 물리 기반 퍼즐 게임",
+    "parameters": {
+        "gravity": 980.0,
+        "drag_force": 500.0,
+        "max_projectile_power": 1000.0,
+        "level_count": 30,
+        "star_thresholds": [
+            1,
+            2,
+            3
+        ]
+    },
+    "core_loop": [
+        "레벨 시작",
+        "플레이어가 오브젝트를 드래그/발사",
+        "물리 시뮬레이션 진행",
+        "목표 달성 시 스타 획득",
+        "다음 레벨 진행"
+    ],
+    "mechanics": [
+        "드래그 앤 드롭",
+        "슬링샷 발사",
+        "물리 충돌",
+        "스타 시스템"
+    ],
+    "assets_required": [
+        {
+            "asset_id": "projectile_sprite",
+            "asset_type": "sprite",
+            "path": "assets/sprites/projectile_sprite.png",
+            "description": "발사체 스프라이트"
+        },
+        {
+            "asset_id": "target_sprite",
+            "asset_type": "sprite",
+            "path": "assets/sprites/target_sprite.png",
+            "description": "목표물 스프라이트"
+        },
+        {
+            "asset_id": "background",
+            "asset_type": "sprite",
+            "path": "assets/sprites/background.png",
+            "description": "배경 이미지"
+        }
+    ],
+    "export_targets": [
+        "android",
+        "html5"
+    ]
+}

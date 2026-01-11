@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://obstacle_scene"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(50, 80)
+
+[node name="Obstacle" type="StaticBody2D" groups=["Obstacle"]]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(50, 80)
+
+[node name="PlaceholderRect" type="ColorRect" parent="Sprite"]
+offset_left = -0.5
+offset_top = -0.5
+offset_right = 0.5
+offset_bottom = 0.5
+color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("1")
+
+[node name="Skinnable" type="Node" parent="."]
+script = preload("res://_core/components/skinnable.gd")
+skinnable_type = 1

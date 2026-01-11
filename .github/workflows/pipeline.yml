@@ -1,0 +1,138 @@
+name: 게임 파이프라인 CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      template_type:
+        description: '게임 템플릿 유형'
+        required: true
+        default: 'runner'
+        type: choice
+        options:
+          - runner
+          - puzzle
+          - clicker
+          - match3
+          - rhythm
+          - idle
+
+env:
+  GODOT_VERSION: "4.2"
+
+jobs:
+  # 1. 코드 검증
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 의존성 설치
+        run: |
+          pip install -r requirements.txt
+          pip install pylint black
+      
+      - name: 코드 포맷 검사
+        run: black --check core/
+      
+      - name: 린트 검사
+        run: pylint core/ --disable=C,R
+  
+  # 2. 테스트
+  test:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+      
+      - name: 테스트 실행
+        run: python test_pipeline.py
+  
+  # 3. Godot 빌드 (수동 트리거 시)
+  build:
+    needs: test
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Godot 설치
+        uses: chickensoft-games/setup-godot@v1
+        with:
+          version: ${{ env.GODOT_VERSION }}
+      
+      - name: 템플릿 복사
+        run: |
+          TEMPLATE_DIR="templates/template_${{ inputs.template_type }}"
+          BUILD_DIR="build_output"
+          mkdir -p $BUILD_DIR
+          cp -r $TEMPLATE_DIR/* $BUILD_DIR/
+      
+      - name: 에셋 임포트
+        run: |
+          cd build_output
+          godot --headless --editor --quit || true
+      
+      - name: HTML5 빌드
+        run: |
+          cd build_output
+          mkdir -p export
+          godot --headless --export-release "Web" export/index.html || echo "빌드 실패 또는 프리셋 미설정"
+      
+      - name: 빌드 결과 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-build-${{ inputs.template_type }}
+          path: build_output/export/
+          retention-days: 7
+  
+  # 4. 슬랙 알림
+  notify:
+    needs: [validate, test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: 슬랙 알림 전송
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "🎮 파이프라인 ${{ job.status == 'success' && '성공' || '실패' }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ job.status == 'success' && '✅' || '❌' }} 게임 파이프라인 CI/CD"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {"type": "mrkdwn", "text": "*브랜치:*\n${{ github.ref_name }}"},
+                    {"type": "mrkdwn", "text": "*커밋:*\n${{ github.sha }}"}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

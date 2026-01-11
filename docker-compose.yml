@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 메인 파이프라인 서비스
+  pipeline:
+    build: .
+    container_name: game-pipeline
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./games:/app/games
+      - ./analytics:/app/analytics
+      - ./ab_tests:/app/ab_tests
+      - ./balance:/app/balance
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - STABILITY_API_KEY=${STABILITY_API_KEY}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - GOOGLE_PLAY_CREDENTIALS=/app/config/google_play_credentials.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n 워크플로우 자동화
+  n8n:
+    image: n8nio/n8n
+    container_name: game-n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-changeme}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+    restart: unless-stopped
+
+  # Redis (캐싱 및 작업 큐)
+  redis:
+    image: redis:alpine
+    container_name: game-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:

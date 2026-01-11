@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://match3_game"]
+
+[ext_resource type="Script" path="res://scripts/board.gd" id="1_board"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.15, 0.1, 0.25, 1)
+
+[node name="Board" type="Node2D" parent="."]
+position = Vector2(140, 400)
+script = ExtResource("1_board")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="GameUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScoreLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 160.0
+text = "점수: 0"
+
+[node name="MovesLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 780.0
+offset_top = 100.0
+offset_right = 1040.0
+offset_bottom = 160.0
+text = "이동: 30"
+horizontal_alignment = 2
+
+[node name="ComboLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 200.0
+offset_right = 100.0
+offset_bottom = 260.0
+text = ""
+horizontal_alignment = 1

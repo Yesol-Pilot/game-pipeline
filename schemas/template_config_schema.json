@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "template_config_schema",
+  "title": "템플릿 설정 스키마",
+  "description": "Godot 게임 템플릿의 메타데이터 및 설정 정의",
+  "type": "object",
+  "required": ["template_name", "template_type", "version", "godot_version", "parameters", "assets_required"],
+  "properties": {
+    "template_name": {
+      "type": "string",
+      "description": "템플릿 이름 (한국어)"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": ["runner", "puzzle", "clicker", "match3", "arcade", "rhythm", "idle"],
+      "description": "게임 유형"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "템플릿 버전 (유의적 버전)"
+    },
+    "godot_version": {
+      "type": "string",
+      "description": "필요한 Godot 버전"
+    },
+    "description": {
+      "type": "string",
+      "description": "템플릿 설명"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "조정 가능한 게임 파라미터",
+      "properties": {
+        "gravity": { "type": "number" },
+        "player_speed": { "type": "number" },
+        "jump_height": { "type": "number" },
+        "spawn_rate": { "type": "number" },
+        "win_score": { "type": "integer" },
+        "difficulty_curve": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "assets_required": {
+      "type": "array",
+      "description": "필요한 자산 목록",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "asset_type", "path"],
+        "properties": {
+          "asset_id": { "type": "string" },
+          "asset_type": {
+            "type": "string",
+            "enum": ["sprite", "spritesheet", "audio", "font", "shader"]
+          },
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "prompt_template": { "type": "string" }
+        }
+      }
+    },
+    "export_targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["android", "html5", "windows", "linux", "macos", "ios"]
+      },
+      "default": ["android", "html5"]
+    },
+    "core_loop": {
+      "type": "array",
+      "description": "핵심 게임 루프 단계",
+      "items": { "type": "string" }
+    },
+    "mechanics": {
+      "type": "array",
+      "description": "게임 메카닉 목록",
+      "items": { "type": "string" }
+    }
+  }
+}

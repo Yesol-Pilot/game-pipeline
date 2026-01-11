@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://rhythm_main"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.1, 1)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="MenuUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/MenuUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
+
+[node name="TitleLabel" type="Label" parent="UILayer/MenuUI/VBoxContainer"]
+layout_mode = 2
+text = "리듬 게임"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UILayer/MenuUI/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="UILayer/MenuUI/VBoxContainer"]
+layout_mode = 2
+text = "플레이"
+
+[node name="SongSelectButton" type="Button" parent="UILayer/MenuUI/VBoxContainer"]
+layout_mode = 2
+text = "곡 선택"
+
+[node name="SettingsButton" type="Button" parent="UILayer/MenuUI/VBoxContainer"]
+layout_mode = 2
+text = "설정"

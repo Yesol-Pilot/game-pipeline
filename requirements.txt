@@ -1,0 +1,34 @@
+# 초자동화 게임 개발 파이프라인 의존성
+# pip install -r requirements.txt
+
+# 브라우저 자동화 (틱톡 크롤링)
+playwright>=1.40.0
+playwright-stealth>=1.0.0
+
+# 구글 트렌드
+pytrends>=4.9.0
+
+# 이미지 처리
+Pillow>=10.0.0
+
+# 배경 제거 (선택)
+rembg>=2.0.0
+
+# HTTP 요청 (슬랙 등)
+requests>=2.31.0
+
+# 웹 대시보드
+fastapi>=0.109.0
+uvicorn>=0.27.0
+
+# iOS App Store Connect
+PyJWT>=2.8.0
+cryptography>=42.0.0
+
+# Google Play API
+google-api-python-client>=2.100.0
+google-auth>=2.25.0
+
+# 테스트
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=3 uid="uid://game_scene"]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+
+[node name="Game" type="Node2D"]
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_gm")
+
+[node name="Background" type="ParallaxBackground" parent="."]
+
+[node name="BackgroundLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.5, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/BackgroundLayer"]
+position = Vector2(540, 960)
+scale = Vector2(10, 10)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(540, 1800)
+
+[node name="CollisionShape" type="CollisionShape2D" parent="Ground"]
+
+[node name="GroundShape" type="RectangleShape2D" parent="Ground/CollisionShape"]
+size = Vector2(1200, 100)
+
+[node name="GroundSprite" type="ColorRect" parent="Ground"]
+offset_left = -600.0
+offset_top = -50.0
+offset_right = 600.0
+offset_bottom = 50.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(200, 1700)
+
+[node name="ObstacleSpawner" type="Node2D" parent="."]
+position = Vector2(1200, 1700)
+
+[node name="SpawnTimer" type="Timer" parent="ObstacleSpawner"]
+wait_time = 2.0
+autostart = true
+
+[node name="ScoreTimer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="GameUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScoreLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 80.0
+text = "점수: 0"
+
+[node name="PauseButton" type="Button" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 900.0
+offset_top = 40.0
+offset_right = 1040.0
+offset_bottom = 80.0
+text = "일시정지"
+
+[connection signal="timeout" from="ObstacleSpawner/SpawnTimer" to="GameManager" method="_on_spawn_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="GameManager" method="_on_score_timer_timeout"]
+[connection signal="pressed" from="UILayer/GameUI/PauseButton" to="GameManager" method="_on_pause_pressed"]

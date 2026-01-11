@@ -1,0 +1,58 @@
+{
+    "template_name": "리듬 게임",
+    "template_type": "rhythm",
+    "version": "1.0.0",
+    "godot_version": "4.2",
+    "description": "음악에 맞춰 떨어지는 노트를 타이밍에 맞게 터치하는 리듬 게임",
+    "parameters": {
+        "lanes": 4,
+        "note_speed": 800.0,
+        "perfect_window": 0.05,
+        "good_window": 0.1,
+        "miss_window": 0.15
+    },
+    "core_loop": [
+        "음악 재생 시작",
+        "노트가 레인을 따라 하강",
+        "플레이어가 타이밍에 맞춰 터치",
+        "판정 (Perfect/Good/Miss)",
+        "콤보 및 점수 계산"
+    ],
+    "mechanics": [
+        "레인별 터치 입력",
+        "판정 시스템",
+        "콤보 시스템",
+        "롱노트 홀드"
+    ],
+    "assets_required": [
+        {
+            "asset_id": "note_normal",
+            "asset_type": "sprite",
+            "path": "assets/sprites/note_normal.png"
+        },
+        {
+            "asset_id": "note_hold",
+            "asset_type": "sprite",
+            "path": "assets/sprites/note_hold.png"
+        },
+        {
+            "asset_id": "lane_bg",
+            "asset_type": "sprite",
+            "path": "assets/sprites/lane_bg.png"
+        },
+        {
+            "asset_id": "hit_effect",
+            "asset_type": "sprite",
+            "path": "assets/sprites/hit_effect.png"
+        },
+        {
+            "asset_id": "bgm_sample",
+            "asset_type": "audio",
+            "path": "assets/audio/bgm_sample.ogg"
+        }
+    ],
+    "export_targets": [
+        "android",
+        "html5"
+    ]
+}

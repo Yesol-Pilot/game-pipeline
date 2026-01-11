@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://puzzle_target"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 40.0
+
+[node name="Target" type="StaticBody2D" groups=["Target"]]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(80, 80)
+
+[node name="PlaceholderCircle" type="ColorRect" parent="Sprite"]
+offset_left = -0.5
+offset_top = -0.5
+offset_right = 0.5
+offset_bottom = 0.5
+color = Color(0.2, 0.8, 0.3, 1)
+
+[node name="HitArea" type="Area2D" parent="."]
+
+[node name="HitShape" type="CollisionShape2D" parent="HitArea"]
+shape = SubResource("1")
+
+[node name="DestroyParticles" type="GPUParticles2D" parent="."]
+emitting = false
+one_shot = true
+amount = 30
+lifetime = 0.8
+
+[node name="Skinnable" type="Node" parent="."]
+script = preload("res://_core/components/skinnable.gd")
+skinnable_type = 5
+custom_skin_key = "target_texture"

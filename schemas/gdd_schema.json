@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "gdd_schema",
+    "title": "게임 기획 문서(GDD) 스키마",
+    "description": "LLM이 생성하는 GDD의 구조 정의",
+    "type": "object",
+    "required": [
+        "game_title",
+        "core_loop",
+        "mechanics",
+        "art_style",
+        "assets_required"
+    ],
+    "properties": {
+        "game_title": {
+            "type": "string",
+            "description": "트렌드를 반영한 게임 제목"
+        },
+        "trend_source": {
+            "type": "object",
+            "description": "트렌드 출처 정보",
+            "properties": {
+                "tiktok_hashtags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "google_trends_keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "trend_velocity": {
+                    "type": "number"
+                },
+                "collected_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "core_loop": {
+            "type": "array",
+            "description": "게임플레이 순환 구조 (스폰 -> 행동 -> 피드백)",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 3
+        },
+        "mechanics": {
+            "type": "array",
+            "description": "구체적인 상호작용 방식",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "art_style": {
+            "type": "object",
+            "description": "아트 스타일 정의",
+            "required": [
+                "style_prompt",
+                "color_palette"
+            ],
+            "properties": {
+                "style_prompt": {
+                    "type": "string",
+                    "description": "이미지 생성 API용 프롬프트"
+                },
+                "color_palette": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "reference_image": {
+                    "type": "string"
+                }
+            }
+        },
+        "character_dna": {
+            "type": "object",
+            "description": "캐릭터 일관성을 위한 DNA 정의",
+            "properties": {
+                "main_character": {
+                    "type": "string"
+                },
+                "enemies": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "assets_required": {
+            "type": "array",
+            "description": "필요한 자산 목록",
+            "items": {
+                "type": "object",
+                "required": [
+                    "asset_id",
+                    "asset_type",
+                    "generation_prompt"
+                ],
+                "properties": {
+                    "asset_id": {
+                        "type": "string"
+                    },
+                    "asset_type": {
+                        "type": "string",
+                        "enum": [
+                            "player",
+                            "enemy",
+                            "background",
+                            "obstacle",
+                            "ui",
+                            "effect",
+                            "audio"
+                        ]
+                    },
+                    "generation_prompt": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "monetization": {
+            "type": "object",
+            "description": "수익화 전략",
+            "properties": {
+                "ad_placements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "interstitial",
+                            "rewarded",
+                            "banner"
+                        ]
+                    }
+                },
+                "iap_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "template_type": {
+            "type": "string",
+            "enum": [
+                "runner",
+                "puzzle",
+                "clicker",
+                "match3",
+                "arcade",
+                "rhythm",
+                "idle"
+            ],
+            "description": "사용할 템플릿 유형"
+        },
+        "difficulty": {
+            "type": "object",
+            "properties": {
+                "initial_difficulty": {
+                    "type": "number"
+                },
+                "difficulty_curve": {
+                    "type": "number"
+                },
+                "max_difficulty": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

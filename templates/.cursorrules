@@ -1,0 +1,147 @@
+# Godot 4 하이퍼 캐주얼 템플릿 규칙
+# AI 에이전트는 이 파일의 규칙을 준수해야 합니다.
+
+## 1. 아키텍처 규칙
+
+### 계층 분리 (필수)
+- `_core/` 폴더의 코드는 **수정 금지** (라이브러리 취급)
+- 로직 스크립트에서 시각적 노드(`$Sprite`, `$Mesh`)를 **직접 제어하지 않음**
+- 모든 상태 변경은 **EventBus 시그널**을 통해 전파
+
+### 패턴
+- MVC(Model-View-Controller) 패턴 준수
+- 컴포넌트 기반(Composition) 설계 우선
+- 상속보다 구성(Composition over Inheritance)
+
+---
+
+## 2. GDScript 스타일
+
+### 정적 타이핑 (필수)
+```gdscript
+# 올바른 예
+var score: int = 0
+var player_name: String = ""
+func add_score(amount: int) -> void:
+
+# 잘못된 예
+var score = 0
+func add_score(amount):
+```
+
+### 노드 참조
+```gdscript
+# 올바른 예 - @export 사용
+@export var player: CharacterBody2D
+@export var score_label: Label
+
+# 잘못된 예 - get_node() 하드코딩
+var player = get_node("../Player")
+var score_label = $UI/ScoreLabel
+```
+
+### 명명 규칙
+- 파일명: `snake_case` (예: `player_controller.gd`)
+- 클래스명: `PascalCase` (예: `class_name PlayerController`)
+- 변수/함수: `snake_case`
+- 상수: `UPPER_SNAKE_CASE`
+
+---
+
+## 3. 리소스 관리 규칙
+
+### 데이터는 리소스로 외부화
+```gdscript
+# 잘못된 예 - 하드코딩
+const JUMP_FORCE = 500
+const PLAYER_SPEED = 300
+
+# 올바른 예 - 리소스 파일 사용
+@export var player_stats: PlayerStatsResource
+# player_stats.jump_force, player_stats.speed
+```
+
+### 에셋 경로
+```gdscript
+# 잘못된 예 - 경로 하드코딩
+var texture = load("res://sprites/player.png")
+
+# 올바른 예 - SkinManager 사용
+var texture = SkinManager.get_texture("player_texture")
+```
+
+---
+
+## 4. 시그널 사용 규칙
+
+### EventBus 통한 통신
+```gdscript
+# 올바른 예 - 이벤트 버스
+func _on_player_died():
+    EventBus.player_died.emit("충돌")
+
+# 잘못된 예 - 직접 호출
+func _on_player_died():
+    $UI.show_game_over()
+    $AudioManager.play_death_sound()
+```
+
+---
+
+## 5. 스킨/리스킨 작업 규칙
+
+### AI가 수정 가능한 영역
+- `skins/` 폴더의 모든 파일
+- `configs/` 폴더의 설정 파일
+- 장르별 `_games/` 폴더의 레벨 데이터
+
+### AI가 수정 금지인 영역
+- `_core/` 폴더 전체
+- 기존 씬 파일의 노드 구조
+- Autoload 싱글톤 등록
+
+### 새 스킨 생성 절차
+1. `skins/새_스킨명/` 폴더 생성
+2. 필요한 텍스처/오디오 배치
+3. `config.tres` (SkinConfig 리소스) 생성
+4. 에셋 경로를 config.tres에 매핑
+
+---
+
+## 6. 파일 구조 규칙
+
+### 리소스 파일 접미사
+- 데이터: `*_data.tres`
+- 설정: `*_config.tres`
+- 머터리얼: `*_mat.tres`
+
+### import 규칙
+- 텍스처: 필터 끔, 반복 끔 (픽셀아트용)
+- 오디오: OGG 포맷 권장
+
+---
+
+## 7. 주석 규칙
+
+### 한국어 주석 필수
+```gdscript
+## 플레이어 컨트롤러 - 이동 및 점프 처리
+class_name PlayerController extends CharacterBody2D
+
+# 점프 높이 (pixels)
+@export var jump_height: float = 400.0
+
+func _physics_process(delta: float) -> void:
+    # 중력 적용
+    velocity.y += gravity * delta
+```
+
+---
+
+## 8. 금지 사항
+
+- [ ] `get_node()` 직접 사용 (예외: 동적 생성된 노드)
+- [ ] 전역 변수 남용
+- [ ] `queue_free()` 직접 호출 (ObjectPool 사용)
+- [ ] 경로 하드코딩
+- [ ] 마법 숫자 (Magic Number) 사용

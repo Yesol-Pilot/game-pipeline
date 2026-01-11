@@ -1,0 +1,276 @@
+{
+    "name": "게임 파이프라인 자동화",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "game-pipeline",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "웹훅 트리거",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1.1,
+            "position": [
+                240,
+                300
+            ],
+            "webhookId": "game-pipeline-webhook"
+        },
+        {
+            "parameters": {
+                "jsCode": "// HMAC 서명 검증\nconst crypto = require('crypto');\n\nconst signingSecret = $env.SLACK_SIGNING_SECRET;\nconst timestamp = $input.first().headers['x-slack-request-timestamp'];\nconst signature = $input.first().headers['x-slack-signature'];\nconst body = JSON.stringify($input.first().body);\n\nconst sigBasestring = `v0:${timestamp}:${body}`;\nconst computedSignature = 'v0=' + crypto\n  .createHmac('sha256', signingSecret)\n  .update(sigBasestring)\n  .digest('hex');\n\nif (computedSignature !== signature) {\n  throw new Error('잘못된 서명');\n}\n\nreturn $input.all();"
+            },
+            "id": "verify-signature",
+            "name": "서명 검증",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "#game-approvals",
+                "blocksUi": {
+                    "blocksValues": [
+                        {
+                            "type": "header",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "🎮 새 게임 기획안: {{ $json.game_title }}",
+                                "emoji": true
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*템플릿:* {{ $json.template_type }}\n*생성 시간:* {{ $json.created_at }}"
+                            }
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "✅ 승인 및 빌드",
+                                        "emoji": true
+                                    },
+                                    "style": "primary",
+                                    "action_id": "approve_gdd",
+                                    "value": "{{ $json.execution_id }}"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "❌ 반려",
+                                        "emoji": true
+                                    },
+                                    "style": "danger",
+                                    "action_id": "reject_gdd",
+                                    "value": "{{ $json.execution_id }}"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "id": "send-slack-message",
+            "name": "슬랙 메시지 전송",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.1,
+            "position": [
+                680,
+                200
+            ],
+            "credentials": {
+                "slackApi": {
+                    "id": "slack-credentials",
+                    "name": "Slack API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resume": "webhook",
+                "options": {
+                    "webhookSuffix": "/approval-response"
+                }
+            },
+            "id": "wait-for-approval",
+            "name": "승인 대기",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                680,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true
+                    },
+                    "conditions": [
+                        {
+                            "leftValue": "={{ $json.action }}",
+                            "rightValue": "approve",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ]
+                }
+            },
+            "id": "check-approval",
+            "name": "승인 확인",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                900,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "command": "python -c \"from core import Pipeline; import asyncio; asyncio.run(Pipeline().run())\""
+            },
+            "id": "run-build",
+            "name": "빌드 실행",
+            "type": "n8n-nodes-base.executeCommand",
+            "typeVersion": 1,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "#game-approvals",
+                "text": "❌ GDD가 반려되었습니다: {{ $json.game_title }}"
+            },
+            "id": "notify-rejection",
+            "name": "반려 알림",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.1,
+            "position": [
+                1120,
+                500
+            ],
+            "credentials": {
+                "slackApi": {
+                    "id": "slack-credentials",
+                    "name": "Slack API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "channel": "#game-approvals",
+                "text": "✅ 빌드 완료: {{ $json.game_title }}\n경로: {{ $json.build_path }}"
+            },
+            "id": "notify-success",
+            "name": "성공 알림",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.1,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "slackApi": {
+                    "id": "slack-credentials",
+                    "name": "Slack API"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "웹훅 트리거": {
+            "main": [
+                [
+                    {
+                        "node": "서명 검증",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "서명 검증": {
+            "main": [
+                [
+                    {
+                        "node": "슬랙 메시지 전송",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "승인 대기",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "승인 대기": {
+            "main": [
+                [
+                    {
+                        "node": "승인 확인",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "승인 확인": {
+            "main": [
+                [
+                    {
+                        "node": "빌드 실행",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "반려 알림",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "빌드 실행": {
+            "main": [
+                [
+                    {
+                        "node": "성공 알림",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "triggerCount": 0,
+    "updatedAt": "2026-01-11T00:00:00.000Z",
+    "versionId": "1"
+}

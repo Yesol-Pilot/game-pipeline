@@ -1,0 +1,72 @@
+{
+    "project": {
+        "name": "초자동화 게임 개발 파이프라인",
+        "version": "1.0.0",
+        "description": "트렌드 기반 자동 게임 개발 시스템"
+    },
+    "paths": {
+        "core": "./core",
+        "games": "./games",
+        "templates": "./templates",
+        "schemas": "./schemas"
+    },
+    "crawler": {
+        "proxy_type": "residential",
+        "browser_engine": "playwright",
+        "stealth_mode": true,
+        "tiktok": {
+            "target_section": "creative_center",
+            "max_results": 20
+        },
+        "google_trends": {
+            "timeframe": "now 1-d",
+            "geo": "KR",
+            "interest_threshold": 50
+        }
+    },
+    "llm": {
+        "provider": "gemini",
+        "model": "gemini-1.5-pro",
+        "api_key": "YOUR_GEMINI_API_KEY_HERE",
+        "json_mode": true,
+        "temperature": 0.7,
+        "schema_path": "schemas/gdd_schema.json"
+    },
+    "image_generation": {
+        "provider": "stability_ai",
+        "api_key": "YOUR_STABILITY_AI_API_KEY_HERE",
+        "api_host": "https://api.stability.ai",
+        "style_strength": 0.5,
+        "default_style_preset": "pixel-art",
+        "negative_prompt": "blurry, inconsistent, mixed styles, low quality, watermark"
+    },
+    "godot": {
+        "version": "4.2",
+        "godot_path": "godot",
+        "headless_import_cmd": "godot --headless --editor --quit",
+        "export_targets": [
+            "android",
+            "html5"
+        ]
+    },
+    "orchestration": {
+        "platform": "n8n",
+        "notification_channel": "slack",
+        "hmac_verification": true,
+        "slack": {
+            "webhook_url": "YOUR_SLACK_WEBHOOK_URL_HERE",
+            "signing_secret": "YOUR_SLACK_SIGNING_SECRET_HERE",
+            "channel": "#game-approvals"
+        },
+        "n8n": {
+            "base_url": "http://localhost:5678",
+            "webhook_path": "/webhook/game-pipeline"
+        }
+    },
+    "schedule": {
+        "enabled": false,
+        "cron": "0 9 * * *",
+        "timezone": "Asia/Seoul"
+    },
+    "language": "ko"
+}

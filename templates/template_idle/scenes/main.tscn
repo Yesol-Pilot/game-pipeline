@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://idle_main"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.05, 0.12, 1)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="MainUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TitleLabel" type="Label" parent="UILayer/MainUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 60.0
+offset_right = 400.0
+offset_bottom = 120.0
+text = "방치형 RPG"
+
+[node name="PlayButton" type="Button" parent="UILayer/MainUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 50.0
+text = "모험 시작"

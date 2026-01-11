@@ -1,0 +1,75 @@
+{
+    "template_name": "무한 러너",
+    "template_type": "runner",
+    "version": "1.0.0",
+    "godot_version": "4.2",
+    "description": "화면을 터치하여 점프하고 장애물을 피하는 무한 러너 게임 템플릿",
+    "parameters": {
+        "gravity": 980.0,
+        "player_speed": 300.0,
+        "jump_height": 400.0,
+        "spawn_rate": 2.0,
+        "initial_difficulty": 1.0,
+        "difficulty_curve": 0.1,
+        "max_difficulty": 5.0
+    },
+    "core_loop": [
+        "플레이어가 자동으로 달린다",
+        "터치 시 점프한다",
+        "장애물과 충돌하면 게임 오버",
+        "거리에 따라 점수 획득",
+        "난이도가 점점 상승"
+    ],
+    "mechanics": [
+        "화면 터치 시 점프",
+        "더블 점프 가능",
+        "장애물 랜덤 생성",
+        "코인 수집"
+    ],
+    "assets_required": [
+        {
+            "asset_id": "player_sprite",
+            "asset_type": "spritesheet",
+            "path": "assets/sprites/player_sprite.png",
+            "description": "플레이어 달리기 애니메이션 스프라이트 시트",
+            "prompt_template": "A sprite sheet of a running {character_dna}, side view, 4 frames, white background"
+        },
+        {
+            "asset_id": "obstacle_sprite",
+            "asset_type": "sprite",
+            "path": "assets/sprites/obstacle_sprite.png",
+            "description": "장애물 스프라이트",
+            "prompt_template": "A simple obstacle, {art_style}, white background"
+        },
+        {
+            "asset_id": "background",
+            "asset_type": "sprite",
+            "path": "assets/sprites/background.png",
+            "description": "게임 배경 이미지",
+            "prompt_template": "A scrolling game background, {art_style}, seamless tile"
+        },
+        {
+            "asset_id": "coin_sprite",
+            "asset_type": "sprite",
+            "path": "assets/sprites/coin_sprite.png",
+            "description": "코인 스프라이트",
+            "prompt_template": "A shiny coin, {art_style}, white background"
+        },
+        {
+            "asset_id": "bg_music",
+            "asset_type": "audio",
+            "path": "assets/audio/bg_music.ogg",
+            "description": "배경 음악"
+        },
+        {
+            "asset_id": "jump_sfx",
+            "asset_type": "audio",
+            "path": "assets/audio/jump_sfx.ogg",
+            "description": "점프 효과음"
+        }
+    ],
+    "export_targets": [
+        "android",
+        "html5"
+    ]
+}

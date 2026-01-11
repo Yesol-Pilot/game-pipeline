@@ -1,0 +1,70 @@
+{
+    "template_name": "매치3 퍼즐",
+    "template_type": "match3",
+    "version": "1.0.0",
+    "godot_version": "4.2",
+    "description": "3개 이상 연결된 블록을 스와이프하여 제거하는 매치3 퍼즐 게임",
+    "parameters": {
+        "grid_width": 8,
+        "grid_height": 8,
+        "cell_size": 100,
+        "min_match": 3,
+        "gem_types": 6,
+        "fall_speed": 500.0,
+        "swap_duration": 0.2
+    },
+    "core_loop": [
+        "보드에 젬 배치",
+        "플레이어가 두 젬 스와이프",
+        "매칭 검사 및 제거",
+        "빈 공간 젬 낙하",
+        "콤보 발생 시 추가 점수"
+    ],
+    "mechanics": [
+        "스와이프로 젬 교환",
+        "3개 이상 매칭 시 제거",
+        "콤보 시스템",
+        "특수 젬 (폭탄, 라인 클리어)"
+    ],
+    "assets_required": [
+        {
+            "asset_id": "gem_red",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_red.png"
+        },
+        {
+            "asset_id": "gem_blue",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_blue.png"
+        },
+        {
+            "asset_id": "gem_green",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_green.png"
+        },
+        {
+            "asset_id": "gem_yellow",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_yellow.png"
+        },
+        {
+            "asset_id": "gem_purple",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_purple.png"
+        },
+        {
+            "asset_id": "gem_orange",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gem_orange.png"
+        },
+        {
+            "asset_id": "background",
+            "asset_type": "sprite",
+            "path": "assets/sprites/background.png"
+        }
+    ],
+    "export_targets": [
+        "android",
+        "html5"
+    ]
+}

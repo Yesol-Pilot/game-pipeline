@@ -1,0 +1,60 @@
+{
+    "template_name": "방치형 RPG",
+    "template_type": "idle",
+    "version": "1.0.0",
+    "godot_version": "4.2",
+    "description": "캐릭터가 자동으로 몬스터를 사냥하고 성장하는 방치형 RPG",
+    "parameters": {
+        "base_attack": 10,
+        "base_hp": 100,
+        "attack_speed": 1.0,
+        "gold_per_kill": 10,
+        "exp_per_kill": 5,
+        "offline_efficiency": 0.5
+    },
+    "core_loop": [
+        "캐릭터가 자동으로 몬스터 공격",
+        "몬스터 처치 시 골드/경험치 획득",
+        "레벨업 및 스탯 상승",
+        "장비/스킬 업그레이드",
+        "더 강한 스테이지 진행"
+    ],
+    "mechanics": [
+        "자동 전투",
+        "레벨 시스템",
+        "장비 강화",
+        "스킬 해금",
+        "오프라인 보상"
+    ],
+    "assets_required": [
+        {
+            "asset_id": "hero_sprite",
+            "asset_type": "sprite",
+            "path": "assets/sprites/hero.png"
+        },
+        {
+            "asset_id": "monster_1",
+            "asset_type": "sprite",
+            "path": "assets/sprites/monster_1.png"
+        },
+        {
+            "asset_id": "monster_2",
+            "asset_type": "sprite",
+            "path": "assets/sprites/monster_2.png"
+        },
+        {
+            "asset_id": "background",
+            "asset_type": "sprite",
+            "path": "assets/sprites/background.png"
+        },
+        {
+            "asset_id": "gold_icon",
+            "asset_type": "sprite",
+            "path": "assets/sprites/gold_icon.png"
+        }
+    ],
+    "export_targets": [
+        "android",
+        "html5"
+    ]
+}

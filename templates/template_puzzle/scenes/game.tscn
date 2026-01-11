@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=3 uid="uid://puzzle_game"]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
+
+[node name="Game" type="Node2D"]
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_gm")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.15, 0.2, 0.35, 1)
+
+[node name="GameArea" type="Node2D" parent="."]
+position = Vector2(540, 960)
+
+[node name="Walls" type="StaticBody2D" parent="GameArea"]
+
+[node name="LeftWall" type="CollisionShape2D" parent="GameArea/Walls"]
+position = Vector2(-500, 0)
+
+[node name="RightWall" type="CollisionShape2D" parent="GameArea/Walls"]
+position = Vector2(500, 0)
+
+[node name="BottomWall" type="CollisionShape2D" parent="GameArea/Walls"]
+position = Vector2(0, 800)
+
+[node name="LaunchArea" type="Node2D" parent="GameArea"]
+position = Vector2(0, -700)
+
+[node name="TargetArea" type="Area2D" parent="GameArea"]
+position = Vector2(0, 600)
+
+[node name="TargetShape" type="CollisionShape2D" parent="GameArea/TargetArea"]
+
+[node name="ProjectileSpawner" type="Node2D" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="GameUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScoreLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 80.0
+text = "점수: 0"
+
+[node name="LevelLabel" type="Label" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 80.0
+offset_right = 200.0
+offset_bottom = 120.0
+text = "레벨: 1"
+
+[node name="StarsContainer" type="HBoxContainer" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 800.0
+offset_top = 40.0
+offset_right = 1040.0
+offset_bottom = 80.0
+
+[node name="RestartButton" type="Button" parent="UILayer/GameUI"]
+layout_mode = 0
+offset_left = 900.0
+offset_top = 100.0
+offset_right = 1040.0
+offset_bottom = 140.0
+text = "다시 시작"
