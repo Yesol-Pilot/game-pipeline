@@ -68,6 +68,21 @@ func _on_player_died() -> void:
 	CombatEvents.game_over.emit(score)
 	print("Game Over! Final Score: ", score)
 	
+	# 데이터 저장 처리
+	var output_data = SaveSystem.get_data()
+	if output_data:
+		var is_new_record = output_data.update_high_score(score)
+		if is_new_record:
+			print("🏆 NEW HIGH SCORE: ", score)
+			# UIEvents.new_high_score.emit(score) 같은 이벤트 추가 가능
+		
+		# 코인 획득 (거리 * 0.1) 예시
+		var earned_coins = int(score * 0.1)
+		output_data.add_coins(earned_coins)
+		
+		# 저장
+		SaveSystem.save_game()
+	
 	# 2초 후 재시작 (SceneTransition 활용)
 	await get_tree().create_timer(2.0).timeout
 	
