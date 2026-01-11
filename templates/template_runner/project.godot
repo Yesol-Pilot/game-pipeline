@@ -24,6 +24,9 @@ SceneTransition="*res://_core/autoloads/scene_transition.gd"
 SaveSystem="*res://_core/autoloads/save_system.gd"
 DailyRewardManager="*res://_core/autoloads/daily_reward_manager.gd"
 ShopManager="*res://_core/autoloads/shop_manager.gd"
+AdManager="*res://_core/autoloads/ad_manager.gd"
+IAPManager="*res://_core/autoloads/iap_manager.gd"
+AnalyticsManager="*res://_core/autoloads/analytics_manager.gd"
 
 [display]
 
