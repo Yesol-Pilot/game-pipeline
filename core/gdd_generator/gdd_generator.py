@@ -142,15 +142,38 @@ class GDDGenerator:
     
     def _call_llm(self, prompt: str) -> dict:
         """
-        LLM API 호출
-        
-        실제 구현 시 Gemini, GPT-4 등 API 연동 필요
+        LLM API 호출 (Real Gemini Integration)
         """
-        provider = self.config.get("provider", "gemini")
+        import os
         
-        # 플레이스홀더 응답 (실제 API 호출로 대체)
+        provider = self.config.get("provider", "gemini")
+        api_key = os.environ.get("GEMINI_API_KEY")
+        
+        # API Key가 있으면 실제 호출
+        if api_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=api_key)
+                
+                model = genai.GenerativeModel('gemini-1.5-pro')
+                response = model.generate_content(prompt)
+                
+                # 응답에서 JSON 추출 (Markdown code block 제거 등)
+                text = response.text
+                if "```json" in text:
+                    text = text.split("```json")[1].split("```")[0]
+                elif "```" in text:
+                    text = text.split("```")[1].split("```")[0]
+                    
+                return json.loads(text.strip())
+            except Exception as e:
+                print(f"[GDDGenerator] LLM 호출 실패: {e}. Mock 데이터를 사용합니다.")
+        
+        # API Key가 없거나 실패 시 Mock 데이터 반환
+        print("[GDDGenerator] Running in MOCK Mode (No API Key or Error).")
+        
         placeholder_response = {
-            "game_title": "트렌드 러너",
+            "game_title": "Gemini Runner [Mock]",
             "core_loop": [
                 "플레이어가 자동으로 달린다",
                 "터치 시 점프한다",
@@ -174,6 +197,13 @@ class GDDGenerator:
             "monetization": {
                 "ad_placements": ["interstitial", "rewarded"],
                 "iap_items": ["광고 제거", "더블 코인"]
+            },
+            "game_config": {
+                "player_speed": 400,
+                "jump_force": 600
+            },
+            "stats": {
+                "hp": 3
             }
         }
         

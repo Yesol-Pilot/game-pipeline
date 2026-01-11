@@ -11,6 +11,7 @@ from .analytics.dashboard import AnalyticsDashboard, GameMetrics
 from .deployer.store_uploader import GooglePlayUploader, AppStoreUploadManager
 from .ab_testing.ab_manager import ABTestManager, ABTest, Variant
 from .balancing.balance_manager import BalanceManager, BalanceConfig
+from .code_generator.code_generator import CodeGenerator
 from .pipeline import Pipeline
 
 __all__ = [
@@ -42,4 +43,6 @@ __all__ = [
     "BalanceConfig",
     # 파이프라인
     "Pipeline",
+    # 코드 생성
+    "CodeGenerator",
 ]
