@@ -27,6 +27,8 @@ ShopManager="*res://_core/autoloads/shop_manager.gd"
 AdManager="*res://_core/autoloads/ad_manager.gd"
 IAPManager="*res://_core/autoloads/iap_manager.gd"
 AnalyticsManager="*res://_core/autoloads/analytics_manager.gd"
+GDDParser="*res://_core/autoloads/gdd_parser.gd"
+RuntimeAssetLoader="*res://_core/autoloads/runtime_asset_loader.gd"
 
 [display]
 

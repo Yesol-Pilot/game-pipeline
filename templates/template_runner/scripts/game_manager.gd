@@ -23,6 +23,10 @@ func _ready() -> void:
 		game_config = default_config.duplicate()
 	elif not game_config:
 		game_config = GameConfig.new()
+	
+	# AI 동적 밸런싱: GDD 값으로 덮어쓰기
+	if GDDParser:
+		GDDParser.apply_gdd_variables(game_config, "game_config")
 		
 	# 이벤트 연결
 	_connect_signals()
