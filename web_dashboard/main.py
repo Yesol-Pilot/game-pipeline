@@ -72,6 +72,35 @@ async def get_system_status():
         "last_build": "Success (2 mins ago)"
     }
 
+class VoiceCommandRequest(BaseModel):
+    command: str
+
+@app.post("/api/voice_command")
+async def process_voice_command(request: VoiceCommandRequest):
+    # Lazy import to avoid circular dep or missing module issues in basic env
+    try:
+        from core.voice.voice_manager import VoiceManager
+        vm = VoiceManager()
+        
+        # 1. Process Intent
+        action = vm.process_command(request.command)
+        
+        # 2. Execute (Mocking file modification for dashboard demo)
+        vm.execute_action(action)
+        
+        return {
+            "status": "success",
+            "recognized_text": request.command,
+            "action_taken": action
+        }
+    except Exception as e:
+        # Fallback if core module not found
+        return {
+            "status": "error",
+            "message": str(e),
+            "fallback": "Mock Action: Increased Game Speed"
+        }
+
 if __name__ == "__main__":
     import uvicorn
     # 개발 서버 실행: python web_dashboard/main.py

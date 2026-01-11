@@ -98,3 +98,83 @@ function log(message, type = "system") {
 
     consoleEl.insertBefore(line, consoleEl.firstChild);
 }
+
+/* Voice Command Logic */
+let isRecording = false;
+let recognition = null;
+
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'ko-KR'; // 한국어 인식
+
+    recognition.onstart = function () {
+        isRecording = true;
+        document.getElementById('micBtn').classList.add('recording');
+        document.getElementById('voiceStatus').innerText = "Listening...";
+        log("Microphone activated.", "system");
+    };
+
+    recognition.onend = function () {
+        isRecording = false;
+        document.getElementById('micBtn').classList.remove('recording');
+        document.getElementById('voiceStatus').innerText = "Tap to Speak...";
+    };
+
+    recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('voiceInput').value = transcript;
+        processVoiceCommand(transcript);
+    };
+} else {
+    log("Web Speech API not supported in this browser.", "error");
+}
+
+function toggleVoice() {
+    if (!recognition) {
+        alert("Speech Recognition not supported. Please use Chrome.");
+        return;
+    }
+
+    if (isRecording) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
+}
+
+function handleVoiceInputKey(event) {
+    if (event.key === 'Enter') {
+        const text = document.getElementById('voiceInput').value;
+        if (text.trim()) {
+            processVoiceCommand(text);
+        }
+    }
+}
+
+async function processVoiceCommand(command) {
+    log(`Recognized: "${command}"`, "system");
+
+    try {
+        const response = await fetch('/api/voice_command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: command })
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            const action = result.action_taken;
+            if (action.target !== "unknown") {
+                log(`ACTION: ${action.operation} ${action.key} by ${action.value}`, "success");
+            } else {
+                log("Could not understand intent.", "error");
+            }
+        } else {
+            log(result.fallback, "system"); // Fallback message
+        }
+    } catch (error) {
+        log(`Voice Command Error: ${error}`, "error");
+    }
+}
